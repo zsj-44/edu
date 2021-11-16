@@ -8,6 +8,11 @@
         </template>
       </el-table-column>
 
+       <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
+
       <el-table-column width="180px" align="center" label="Date">
         <template slot-scope="{row}">
           <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>

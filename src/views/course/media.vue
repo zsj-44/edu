@@ -70,7 +70,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="内容" min-width="180px">
+      <el-table-column label="图文内容" min-width="180px">
         <template slot-scope="{ row }">
           <div style="display: flex">
             <img
@@ -227,7 +227,7 @@
 </template>
 
 <script>
-import { fetchList, createCourse, updateCourse, deleteCourse } from "@/api/course";
+import { fetchList, createMedia, updateMedia, deleteMedia } from "@/api/media";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -368,7 +368,7 @@ export default {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
           this.temp.author = "vue-element-admin";
-          createCourse(this.temp).then(() => {
+          createMedia(this.temp).then(() => {
             this.list.unshift(this.temp);
             this.dialogFormVisible = false;
             this.$notify({
@@ -389,13 +389,13 @@ export default {
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
-    },
+    }, 
     updateData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateCourse(tempData).then(() => {
+          updateMedia(tempData).then(() => {
             const index = this.list.findIndex((v) => v.id === this.temp.id);
             this.list.splice(index, 1, this.temp);
             this.dialogFormVisible = false;
@@ -410,7 +410,7 @@ export default {
       });
     },
     handleDelete(row, index) {
-      deleteCourse(row).then(response => {
+      deleteMedio (row).then(response => {
         this.$notify({
           title: "提示",
           message: "删除成功",
