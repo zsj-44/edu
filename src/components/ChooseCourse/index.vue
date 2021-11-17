@@ -36,18 +36,16 @@
               style="background-color: #fbfbfb; border: 0px"
             >
               <el-menu-item
+                v-for="(item, index) in menus"
                 :index="item.index"
-                v-for="(item,index) in menus"
                 :key="index"
                 >{{ item.name }}</el-menu-item
               >
-              <!-- <el-menu-item index="1" key="图文">图文</el-menu-item> -->
             </el-menu>
           </el-aside>
           <el-container>
             <el-main style="height:45vh; padding:0px overflow-y:auto;">
               <el-table
-                :key="tableKey"
                 v-loading="listLoading"
                 :data="list"
                 fit
@@ -103,6 +101,13 @@
 </template>
 
 <script>
+let M = {}
+function importAll(r){
+  r.keys().forEach(key => M[key] = r(key))
+}
+
+importAll(require.context('@/api/',true,/\.js$/)) 
+
 import { fetchList } from "@/api/media";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 
@@ -113,26 +118,30 @@ export default {
   data() {
     return {
       key: "media",
-      // menus: [
-      //   {
-      //     name: 图文,
-      //     index: "media"
-      //   },
-      //   {
-      //     name: 音频,
-      //     index: "audio"
-      //   },
-      //   {
-      //     name: 视频,
-      //     index: "video "
-      //   }
-      // ],
-      tablekey: 0,
+      menus: [
+        {
+          name: '图文',
+          index: "media",
+        },
+        {
+          name: "音频",
+          index: "audio",
+        },
+        {
+          name: "视频",
+          index: "video",
+        },
+      ],
+      // tablekey: 0 ,
+      // :key="tableKey"
+
       list: [],
       dialogVisible: false,
       listLoading: true,
       multipleSelection: [],
       total: 0,
+      callback:null,
+      limit:-1,
       form: {
         title: "",
         page: 1,
@@ -143,29 +152,47 @@ export default {
   methods: {
     getData() {
       this.listLoading = true;
+      let fetchList = M[`./${this.key}.js`].fetchList
       fetchList(this.form).then((response) => {
         this.list = response.data.items;
         this.total = response.data.total;
+        
         this.listLoading = false;
       });
     },
-    open() {
+    open(callback,limit = -1) {
       this.getData();
       this.dialogVisible = true;
+      this.limit=limit
+      this.callback = callback;
+
     },
     close() {
       this.dialogVisible = false;
     },
     confirm() {
+      if(this.multipleSelection === 0){
+        return this.$message.error('你没有选中数据');
+      }
+      if(this.limit != -1 && this.multipleSelection > this.limit){
+        return this.$message.error('最多可以选中'+this.limit+'个');
+      }
+      this.callback(this.multipleSelection);
       this.close();
+      // 清空选中
+      this.$refs.multipleTable.clearSelection()
     },
     headleFilter() {
       //header按钮搜索方法
+      this.form.page = 1
+      this.getData()
     },
     onAsideSelect(e) {
       //列表点击方法
       console.log(e);
+      this.form.page = 1;
       this.key = e;
+      this.getData();
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

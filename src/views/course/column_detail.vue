@@ -250,7 +250,9 @@ export default {
   },
   methods: {
     addCourse(){
-      this.$refs.ChooseCourse.open()
+      this.$refs.ChooseCourse.open((val)=>{
+        this.list = [...this.list,...val]
+      },20)
     },
     handleFilter() {
       //先默认为空
