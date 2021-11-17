@@ -37,6 +37,7 @@
         style="margin-left: 10px"
         type="primary"
         icon="el-icon-edit"
+        @click="addCourse"
       >
         新增目录
       </el-button>
@@ -156,7 +157,7 @@
               size="mini"
               type="danger"
               slot="reference"
-            >
+            > 
               删除
             </el-button>
           </el-popconfirm>
@@ -169,6 +170,9 @@
         </template>
       </el-table-column>
     </el-table>
+
+  <Choose-Course ref="ChooseCourse"></Choose-Course>  
+
   </div>
 </template>
 <script>
@@ -180,7 +184,11 @@ const statusOptions = {
 import { fetchDetail, fetchDetailCourse } from "@/api/column.js";
 import waves from "@/directive/waves"; // waves directive
 import Sortable from "sortablejs";
+import ChooseCourse from "@/components/ChooseCourse/index.vue";
 export default {
+  components: {
+    ChooseCourse
+  },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -241,6 +249,9 @@ export default {
     this.getList();
   },
   methods: {
+    addCourse(){
+      this.$refs.ChooseCourse.open()
+    },
     handleFilter() {
       //先默认为空
     },

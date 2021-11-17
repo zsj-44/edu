@@ -252,6 +252,7 @@ export default {
   },
   data() {
     return {
+      tablekey:0,
       list: null,
       total: 0,
       listLoading: true,
